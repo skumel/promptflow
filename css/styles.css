@@ -1,0 +1,875 @@
+/* ==========================================================================
+   PromptFlow Teleprompter - Fully Responsive Modern Offline Styles
+   Adapts naturally to ANY browser window size (top-half, side, small, or full)
+   ========================================================================== */
+
+:root {
+  --bg-primary: #0a0a0c;
+  --bg-surface: #141419;
+  --bg-surface-hover: #1f1f27;
+  --bg-panel: #141419;
+  --border-color: rgba(255, 255, 255, 0.12);
+  --border-active: rgba(99, 102, 241, 0.6);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-dim: #64748b;
+  --accent: #6366f1;
+  --accent-hover: #4f46e5;
+  --accent-light: rgba(99, 102, 241, 0.2);
+  --cue-bg: rgba(245, 158, 11, 0.2);
+  --cue-text: #fbbf24;
+  --cue-border: rgba(245, 158, 11, 0.5);
+  --guide-color: rgba(99, 102, 241, 0.25);
+  --guide-line: #818cf8;
+  
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --prompter-font-size: 38px;
+  --prompter-line-height: 1.55;
+  --prompter-max-width: 900px;
+  --prompter-letter-spacing: 0px;
+  --guide-pos-pad: 38vh;
+}
+
+/* Theme variations */
+body[data-theme="amber"] {
+  --bg-primary: #000000;
+  --bg-surface: #14110b;
+  --bg-surface-hover: #221d12;
+  --bg-panel: #14110b;
+  --text-primary: #ffb833;
+  --text-secondary: #cc8d1a;
+  --accent: #f59e0b;
+  --accent-hover: #d97706;
+  --accent-light: rgba(245, 158, 11, 0.25);
+  --guide-color: rgba(245, 158, 11, 0.25);
+  --guide-line: #f59e0b;
+}
+
+body[data-theme="pure-dark"] {
+  --bg-primary: #000000;
+  --bg-surface: #0e0e0e;
+  --bg-surface-hover: #1c1c1c;
+  --bg-panel: #0e0e0e;
+  --text-primary: #ffffff;
+  --text-secondary: #888888;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --guide-color: rgba(59, 130, 246, 0.25);
+  --guide-line: #3b82f6;
+}
+
+body[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #f1f5f9;
+  --bg-panel: #ffffff;
+  --border-color: rgba(0, 0, 0, 0.12);
+  --border-active: rgba(99, 102, 241, 0.5);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-dim: #94a3b8;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-light: rgba(79, 70, 229, 0.15);
+  --cue-bg: rgba(217, 119, 6, 0.15);
+  --cue-text: #b45309;
+  --cue-border: rgba(217, 119, 6, 0.4);
+  --guide-color: rgba(79, 70, 229, 0.15);
+  --guide-line: #6366f1;
+}
+
+/* Reset & Box Sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+}
+
+/* App Container - Naturally fills whatever size the user makes the browser window */
+#app {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+}
+
+/* ==========================================================================
+   Header & Top Navigation Bar (Compact & Clean)
+   ========================================================================== */
+
+.prompter-header {
+  height: 48px;
+  min-height: 48px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  z-index: 40;
+  flex-shrink: 0;
+  user-select: none;
+  gap: 12px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.logo-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.2px;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.logo-badge svg {
+  color: var(--accent);
+}
+
+.doc-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 10px;
+  border-left: 1px solid var(--border-color);
+  font-size: 12px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doc-info .file-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Buttons and Controls */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 11px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 7px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  outline: none;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-active);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 7px;
+}
+
+.btn-sm {
+  padding: 3px 8px;
+  font-size: 11px;
+  height: 28px;
+}
+
+.btn-active {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ==========================================================================
+   Teleprompter Main Stage (Takes 100% of remaining vertical space)
+   ========================================================================== */
+
+.prompter-stage {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  background: var(--bg-primary);
+  cursor: pointer;
+}
+
+/* Viewport with dynamic flip/mirror */
+.prompter-viewport {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  position: relative;
+  scroll-behavior: auto; /* Handled smoothly by JS requestAnimationFrame */
+  scrollbar-width: none;
+}
+
+.prompter-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.prompter-viewport.mirror-h {
+  transform: scaleX(-1);
+}
+
+.prompter-viewport.mirror-v {
+  transform: scaleY(-1);
+}
+
+/* Scroll Content */
+.prompter-content {
+  width: 100%;
+  max-width: var(--prompter-max-width);
+  margin: 0 auto;
+  /* Top padding ensures first line starts right at the reading guide */
+  padding: var(--guide-pos-pad, 38vh) 28px 75vh 28px;
+  font-size: var(--prompter-font-size);
+  line-height: var(--prompter-line-height);
+  letter-spacing: var(--prompter-letter-spacing);
+  color: var(--text-primary);
+  font-weight: 500;
+  word-wrap: break-word;
+  transition: font-size 0.1s ease;
+}
+
+/* Typography in prompter */
+.prompter-content h1, 
+.prompter-content h2, 
+.prompter-content h3 {
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.6em;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.prompter-content h1 { font-size: 1.35em; }
+.prompter-content h2 { font-size: 1.2em; }
+.prompter-content h3 { font-size: 1.1em; }
+
+.prompter-content p {
+  margin-bottom: 1.1em;
+}
+
+.prompter-content ul, 
+.prompter-content ol {
+  margin-bottom: 1.1em;
+  padding-left: 1.5em;
+}
+
+.prompter-content li {
+  margin-bottom: 0.5em;
+}
+
+.prompter-content blockquote {
+  border-left: 4px solid var(--accent);
+  padding-left: 16px;
+  margin: 1.2em 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Speaking Cues: [PAUSE], [SMILE], [CLICK SLIDE], etc. */
+.prompter-content .cue-badge,
+.prompter-content .stage-direction {
+  display: inline-block;
+  background: var(--cue-bg);
+  color: var(--cue-text);
+  border: 1px solid var(--cue-border);
+  border-radius: 6px;
+  padding: 2px 10px;
+  font-size: 0.72em;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin: 4px 2px;
+  vertical-align: middle;
+}
+
+.prompter-content .pdf-page-marker {
+  display: block;
+  text-align: center;
+  font-size: 0.45em;
+  font-weight: 600;
+  color: var(--text-dim);
+  border-top: 1px dashed var(--border-color);
+  border-bottom: 1px dashed var(--border-color);
+  padding: 8px 0;
+  margin: 2em 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Reading Guide Line (Eye-Line Tracker)
+   Always stays inside the prompter-stage, NEVER covered by the control bar!
+   ========================================================================== */
+
+.reading-guide {
+  position: absolute;
+  top: 38%; /* Eye line at 38% height of the stage */
+  left: 0;
+  width: 100%;
+  height: calc(var(--prompter-font-size) * 1.65);
+  pointer-events: none;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1.5px solid var(--guide-line);
+  border-bottom: 1.5px solid var(--guide-line);
+  background: linear-gradient(
+    90deg, 
+    var(--guide-color) 0%, 
+    transparent 12%, 
+    transparent 88%, 
+    var(--guide-color) 100%
+  );
+  opacity: 0.9;
+  transition: opacity 0.2s ease, top 0.15s ease;
+}
+
+.guide-arrow-left, .guide-arrow-right {
+  color: var(--guide-line);
+  font-size: 16px;
+  font-weight: bold;
+  padding: 0 10px;
+  animation: pulseGuide 2.5s infinite ease-in-out;
+}
+
+@keyframes pulseGuide {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+.reading-guide.hidden {
+  display: none;
+}
+
+/* ==========================================================================
+   Bottom Controls Bar (Docked Footer Outside the Reading Stage)
+   Separated from prompter-stage so it CANNOT overlap the reading line!
+   ========================================================================== */
+
+.prompter-controls {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 30;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  padding: 6px 14px 8px 14px;
+  gap: 6px;
+  box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+}
+
+/* Scrubber / Timeline */
+.scrubber-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+.scrubber-bar {
+  flex: 1;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.scrubber-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  width: 0%;
+  position: relative;
+  transition: width 0.05s linear;
+}
+
+.scrubber-thumb {
+  position: absolute;
+  right: -5px;
+  top: -3.5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  cursor: grab;
+}
+
+/* Button Row */
+.controls-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.controls-group-left, 
+.controls-group-center, 
+.controls-group-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Prominent Play / Pause Button */
+.btn-play-pause {
+  height: 36px;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 18px;
+  background: var(--accent);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.4);
+  gap: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.15s ease;
+}
+
+.btn-play-pause:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.6);
+}
+
+.btn-play-pause.playing {
+  background: #ef4444;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.4);
+}
+
+.btn-play-pause.playing:hover {
+  background: #dc2626;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.6);
+}
+
+/* Speed Controls */
+.speed-control {
+  display: flex;
+  align-items: center;
+  background: var(--bg-surface-hover);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 2px 4px;
+  gap: 4px;
+}
+
+.speed-badge {
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-width: 52px;
+  text-align: center;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.speed-badge small {
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--text-dim);
+  margin-left: 1px;
+}
+
+/* Quick Font Controls in footer */
+.font-stepper {
+  display: flex;
+  align-items: center;
+  background: var(--bg-surface-hover);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 2px 4px;
+  gap: 4px;
+}
+
+/* Collapsed Controls State (Clean Reading Mode) */
+.prompter-controls.collapsed {
+  height: 10px;
+  min-height: 10px;
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--border-color);
+  opacity: 0.35;
+}
+
+.prompter-controls.collapsed:hover {
+  opacity: 0.85;
+}
+
+.prompter-controls.collapsed > * {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Modals: Script Editor, Settings, Shortcuts
+   ========================================================================== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 720px;
+  max-height: 88vh;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalEnter 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalEnter {
+  from { opacity: 0; transform: scale(0.97) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header h3 {
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-body {
+  padding: 18px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 12px 18px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-primary);
+}
+
+/* Script Editor Area */
+.script-textarea {
+  width: 100%;
+  height: 320px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 9px;
+  padding: 14px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+  user-select: text;
+}
+
+.script-textarea:focus {
+  border-color: var(--accent);
+}
+
+/* File Drop Zone */
+.dropzone {
+  border: 2px dashed var(--border-color);
+  border-radius: 10px;
+  padding: 22px 16px;
+  text-align: center;
+  background: var(--bg-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 14px;
+}
+
+.dropzone:hover, .dropzone.dragover {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+.dropzone-icon {
+  margin-bottom: 6px;
+  color: var(--accent);
+}
+
+.dropzone-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 3px;
+}
+
+.dropzone-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* Settings Form Groups */
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.setting-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: var(--bg-primary);
+  padding: 12px;
+  border-radius: 9px;
+  border: 1px solid var(--border-color);
+}
+
+.setting-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  justify-content: space-between;
+}
+
+.setting-desc {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+input[type="range"] {
+  accent-color: var(--accent);
+  cursor: pointer;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+/* Shortcuts */
+.shortcuts-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.shortcuts-table tr {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.shortcuts-table td {
+  padding: 8px 6px;
+}
+
+kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-family: monospace;
+  background: var(--bg-surface-hover);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  color: var(--text-primary);
+}
+
+/* Countdown Overlay */
+.countdown-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 10, 12, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 80;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.countdown-number {
+  font-size: 96px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  animation: countdownPop 0.8s ease;
+}
+
+.countdown-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+@keyframes countdownPop {
+  0% { transform: scale(0.6); opacity: 0; }
+  50% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 74px;
+  right: 18px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  z-index: 120;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transform: translateY(16px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Short Window Adjustments (e.g. When snapped to top half or 250px-350px tall) */
+@media (max-height: 400px) {
+  .prompter-header {
+    height: 38px;
+    min-height: 38px;
+    padding: 0 10px;
+  }
+  .prompter-controls {
+    padding: 4px 10px 5px 10px;
+    gap: 4px;
+  }
+  .btn-play-pause {
+    height: 30px;
+    padding: 0 12px;
+    font-size: 12px;
+  }
+  .btn-icon {
+    width: 28px;
+    height: 28px;
+  }
+  .reading-guide {
+    top: 42%;
+  }
+  .prompter-content {
+    padding-top: 38vh;
+  }
+}
+
+/* Narrow Window Adjustments (e.g. When snapped to side of screen) */
+@media (max-width: 650px) {
+  .doc-info {
+    display: none;
+  }
+  .controls-main-row {
+    flex-wrap: nowrap;
+    gap: 4px;
+  }
+  .speed-slider-wrap {
+    display: none;
+  }
+}

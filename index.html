@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0a0c">
+  <meta name="description" content="Offline Public Speaker Teleprompter for Chromebook & Web">
+  <link rel="manifest" href="manifest.json">
+  <title>PromptFlow - Offline Teleprompter</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-theme="pure-dark">
+
+  <div id="app">
+    
+    <!-- Top Navigation Bar -->
+    <header class="prompter-header">
+      <div class="header-left">
+        <div class="logo-badge" title="PromptFlow Teleprompter">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          <span>PromptFlow</span>
+        </div>
+        
+        <div class="doc-info">
+          <span class="file-name" id="docTitle">Sample Talk</span>
+          <span id="wordCount">340 words (~2:30)</span>
+        </div>
+      </div>
+
+      <!-- Right Action Buttons -->
+      <div class="header-right">
+        <!-- Open Local File -->
+        <label for="fileInput" class="btn btn-primary" title="Load DOCX, PDF, Markdown, or Text file">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span>Open File</span>
+        </label>
+        <input type="file" id="fileInput" accept=".docx,.pdf,.md,.markdown,.txt,.rtf,.html" style="display: none;">
+
+        <!-- Edit Script Text -->
+        <button class="btn btn-icon" id="btnEditScript" title="Edit Script / Paste Text (E)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+        </button>
+
+        <!-- Pop-out Window (Always-on-top PiP) -->
+        <button class="btn btn-icon" id="btnPip" title="Pop-out into Floating Window">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <rect x="12" y="10" width="8" height="8" rx="1"></rect>
+          </svg>
+        </button>
+
+        <!-- Settings -->
+        <button class="btn btn-icon" id="btnSettings" title="Prompter Settings">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+
+        <!-- Keyboard Shortcuts -->
+        <button class="btn btn-icon" id="btnShortcuts" title="Keyboard Shortcuts (?)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </button>
+
+        <!-- Fullscreen -->
+        <button class="btn btn-icon" id="btnFullscreen" title="Toggle Fullscreen (F)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Prompter Stage Area (Fills 100% of remaining vertical space) -->
+    <main class="prompter-stage" id="prompterStage">
+      
+      <!-- Reading Eye-Line Guide Marker -->
+      <div class="reading-guide" id="readingGuide">
+        <span class="guide-arrow-left">&#9654;</span>
+        <span class="guide-arrow-right">&#9664;</span>
+      </div>
+
+      <!-- Viewport & Scrollable Content -->
+      <div class="prompter-viewport" id="prompterViewport">
+        <div class="prompter-content" id="prompterContent">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- 3-2-1 Countdown Overlay -->
+      <div class="countdown-overlay" id="countdownOverlay">
+        <div class="countdown-number" id="countdownNumber">3</div>
+        <div class="countdown-text">Get ready... Look at audience!</div>
+      </div>
+
+    </main>
+
+    <!-- Dedicated Bottom Footer Controls Bar (OUTSIDE the stage, NEVER overlaps reading line!) -->
+    <footer class="prompter-controls" id="prompterControls">
+      
+      <!-- Scrubber & Time Tracker -->
+      <div class="scrubber-container">
+        <span id="timeElapsed">00:00</span>
+        <div class="scrubber-bar" id="scrubberBar" title="Click or drag to jump anywhere in speech">
+          <div class="scrubber-fill" id="scrubberFill">
+            <div class="scrubber-thumb" id="scrubberThumb"></div>
+          </div>
+        </div>
+        <span id="timeRemaining">-00:00</span>
+      </div>
+
+      <!-- Controls Row -->
+      <div class="controls-main-row">
+        
+        <!-- Left: Rewind / Fast Forward / Restart -->
+        <div class="controls-group-left">
+          <button class="btn btn-icon btn-sm" id="btnRestart" title="Restart to Beginning (Home)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="19 20 9 12 19 4 19 20"></polygon>
+              <line x1="5" y1="19" x2="5" y2="5"></line>
+            </svg>
+          </button>
+          <button class="btn btn-icon btn-sm" id="btnRewind" title="Rewind 5 seconds (Left Arrow)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 19 2 12 11 5 11 19"></polygon>
+              <polygon points="22 19 13 12 22 5 22 19"></polygon>
+            </svg>
+          </button>
+          <button class="btn btn-icon btn-sm" id="btnForward" title="Forward 5 seconds (Right Arrow)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="13 19 22 12 13 5 13 19"></polygon>
+              <polygon points="2 19 11 12 2 5 2 19"></polygon>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Center: Big Play / Pause Button -->
+        <div class="controls-group-center">
+          <button class="btn-play-pause" id="btnPlayPause" title="Start / Pause Scrolling (Spacebar)">
+            <span id="playIcon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </span>
+            <span id="pauseIcon" style="display: none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="6" y="4" width="4" height="16"></rect>
+                <rect x="14" y="4" width="4" height="16"></rect>
+              </svg>
+            </span>
+            <span id="playLabel">Play</span>
+            <kbd style="margin-left: 2px; font-size: 9px; opacity: 0.85;">Space</kbd>
+          </button>
+        </div>
+
+        <!-- Right: Speed, Font Size, Mirror, Guide & Collapse -->
+        <div class="controls-group-right">
+          <!-- Slower / Faster with WPM readout -->
+          <div class="speed-control" title="Adjust Scrolling Speed (Arrow Up / Down)">
+            <button class="btn btn-icon btn-sm" id="btnSlower" title="Slower (Arrow Down)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+            
+            <div class="speed-badge">
+              <div><span id="speedDisplay">35</span><small>px/s</small></div>
+              <div style="font-size: 8.5px; color: var(--text-dim);" id="speedWpm">130 wpm</div>
+            </div>
+
+            <button class="btn btn-icon btn-sm" id="btnFaster" title="Faster (Arrow Up)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Quick Font Size Stepper -->
+          <div class="font-stepper" title="Adjust Font Size ([ or ])">
+            <button class="btn btn-icon btn-sm" id="btnFontSmaller" title="Smaller Font ([)">
+              <span style="font-weight: 700; font-size: 11px;">A-</span>
+            </button>
+            <button class="btn btn-icon btn-sm" id="btnFontLarger" title="Larger Font (])">
+              <span style="font-weight: 700; font-size: 13px;">A+</span>
+            </button>
+          </div>
+
+          <!-- Speed slider (hidden on ultra-compact windows) -->
+          <div class="speed-slider-wrap">
+            <input type="range" id="speedSlider" min="5" max="200" value="35" style="width: 60px;" title="Drag speed slider">
+          </div>
+
+          <!-- Mirror Toggle -->
+          <button class="btn btn-icon btn-sm" id="btnToggleMirror" title="Flip / Mirror Horizontal (M)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="16 3 21 3 21 8"></polyline>
+              <line x1="4" y1="20" x2="21" y2="3"></line>
+              <polyline points="21 16 21 21 16 21"></polyline>
+              <line x1="15" y1="15" x2="21" y2="21"></line>
+            </svg>
+          </button>
+
+          <!-- Guide Toggle -->
+          <button class="btn btn-icon btn-sm btn-active" id="btnToggleGuide" title="Toggle Eye-Line Guide (G)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+
+          <!-- Collapse / Minimize Controls Bar -->
+          <button class="btn btn-icon btn-sm" id="btnToggleControls" title="Hide / Minimize Controls (H)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ==========================================================================
+       Modals: Script Editor, Settings, Keyboard Shortcuts
+       ========================================================================== -->
+
+  <!-- Script Editor / File Upload Modal -->
+  <div class="modal-overlay" id="editorModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+          Speech Script & Local Files
+        </h3>
+        <button class="btn btn-icon" id="btnCloseEditor">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Drag & Drop Zone -->
+        <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+          <div class="dropzone-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+          </div>
+          <div class="dropzone-text">Drop your local file here, or click to browse</div>
+          <div class="dropzone-hint">Supports .docx (Word), .pdf, .md (Markdown), and .txt / .rtf files 100% offline</div>
+        </div>
+
+        <div style="font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary);">
+          Or edit / paste your script directly:
+        </div>
+        <textarea class="script-textarea" id="editorTextarea" placeholder="Type or paste your speech notes here... Use [PAUSE] or [SMILE] for stage cues."></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn" onclick="window.prompterApp.loadSampleTalk(); window.prompterApp.closeModals();">Load Sample Speech</button>
+        <button class="btn btn-primary" id="btnSaveEditor">Save & Start Speaking</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          Prompter Settings
+        </h3>
+        <button class="btn btn-icon" id="btnCloseSettings">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="settings-grid">
+          
+          <!-- Font Size -->
+          <div class="setting-item">
+            <div class="setting-label">
+              <span>Font Size</span>
+              <span id="fontSizeVal">38px</span>
+            </div>
+            <div class="setting-desc">Adjust for comfortable reading at your distance.</div>
+            <input type="range" id="fontSizeSlider" min="18" max="84" value="38">
+          </div>
+
+          <!-- Column Width (Reading Margin) -->
+          <div class="setting-item">
+            <div class="setting-label">
+              <span>Reading Column Width</span>
+              <span id="colWidthVal">900px</span>
+            </div>
+            <div class="setting-desc">Narrower columns keep eye motion minimal so you look straight ahead.</div>
+            <input type="range" id="colWidthSlider" min="450" max="1400" value="900">
+          </div>
+
+          <!-- Eye-Line Guide Position -->
+          <div class="setting-item">
+            <div class="setting-label">
+              <span>Eye-Line Marker Height</span>
+              <span id="guidePosVal">38%</span>
+            </div>
+            <div class="setting-desc">Place near the top to look straight into your webcam.</div>
+            <input type="range" id="guidePosSlider" min="15" max="70" value="38">
+          </div>
+
+          <!-- Color Theme -->
+          <div class="setting-item">
+            <div class="setting-label">
+              <span>Color Theme</span>
+            </div>
+            <div class="setting-desc">High-contrast black prevents screen reflections on your face or glasses.</div>
+            <select id="themeSelect" class="btn" style="width: 100%; text-align: left; padding: 7px;">
+              <option value="pure-dark">Pure Dark (OLED Black + Crisp White)</option>
+              <option value="amber">Studio Amber (Classic Broadcast Prompter)</option>
+              <option value="light">Light Mode (Clean Gray + Dark Slate)</option>
+            </select>
+          </div>
+
+          <!-- 3-2-1 Countdown -->
+          <div class="setting-item" style="grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between;">
+            <div>
+              <div class="setting-label">3-Second Countdown Before Start</div>
+              <div class="setting-desc">Gives you time to look up and smile before scrolling begins.</div>
+            </div>
+            <input type="checkbox" id="countdownCheckbox" checked style="width: 18px; height: 18px; accent-color: var(--accent);">
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div></div>
+        <button class="btn btn-primary" onclick="window.prompterApp.closeModals()">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Keyboard Shortcuts Modal -->
+  <div class="modal-overlay" id="shortcutsModal">
+    <div class="modal-card" style="max-width: 540px;">
+      <div class="modal-header">
+        <h3>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          Keyboard & Clicker Shortcuts
+        </h3>
+        <button class="btn btn-icon" id="btnCloseShortcuts">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <table class="shortcuts-table">
+          <tr>
+            <td><kbd>Space</kbd> or <kbd>Click Stage</kbd></td>
+            <td><strong>Play / Pause</strong> scrolling</td>
+          </tr>
+          <tr>
+            <td><kbd>&uarr;</kbd> / <kbd>&darr;</kbd> (Up / Down)</td>
+            <td><strong>Faster / Slower</strong> scrolling speed</td>
+          </tr>
+          <tr>
+            <td><kbd>&larr;</kbd> / <kbd>&rarr;</kbd> (Left / Right)</td>
+            <td><strong>Rewind / Jump Forward</strong> 5 seconds</td>
+          </tr>
+          <tr>
+            <td><kbd>Home</kbd></td>
+            <td><strong>Restart</strong> to beginning of speech</td>
+          </tr>
+          <tr>
+            <td><kbd>[</kbd> / <kbd>]</kbd></td>
+            <td>Decrease / Increase <strong>Font Size</strong></td>
+          </tr>
+          <tr>
+            <td><kbd>M</kbd></td>
+            <td>Toggle <strong>Mirror / Flip</strong> (for glass teleprompter rigs)</td>
+          </tr>
+          <tr>
+            <td><kbd>G</kbd></td>
+            <td>Toggle <strong>Eye-Line Guide Marker</strong></td>
+          </tr>
+          <tr>
+            <td><kbd>H</kbd></td>
+            <td><strong>Hide / Show Controls Bar</strong> (Clean reading view)</td>
+          </tr>
+          <tr>
+            <td><kbd>F</kbd></td>
+            <td>Toggle <strong>Fullscreen</strong></td>
+          </tr>
+          <tr>
+            <td><kbd>E</kbd></td>
+            <td>Open <strong>Script Editor / File Drop</strong></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="modal-footer">
+        <div></div>
+        <button class="btn btn-primary" onclick="window.prompterApp.closeModals()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <polyline points="12 6 12 12 14 14"></polyline>
+    </svg>
+    <span id="toastMessage">Ready</span>
+  </div>
+
+  <!-- Standalone Parsers Bundle (DOCX, PDF, Markdown 100% Offline) -->
+  <script src="dist/parsers.bundle.js"></script>
+  <!-- Document Handling -->
+  <script src="js/parsers.js"></script>
+  <!-- Main Application Controller -->
+  <script src="js/app.js"></script>
+
+  <!-- Service Worker Registration for Offline Chromebook PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(err => {
+          console.log('ServiceWorker note:', err.message);
+        });
+      });
+    }
+  </script>
+
+</body>
+</html>
